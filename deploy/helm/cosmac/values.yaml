@@ -18,7 +18,7 @@ config:
   mode: block
   threshold: 0.7
   # Mounted as COSMAC_DATA_DIR. Use a PVC for persistence.
-  dataDir: /home/shield/data
+  dataDir: /home/cosmac/data
   # Extra env vars passed verbatim to the container.
   extraEnv: []
   # - name: SOMETHING

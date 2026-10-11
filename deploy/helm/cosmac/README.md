@@ -5,7 +5,7 @@ Deploy the cosmac REST API on Kubernetes.
 ## TL;DR
 
 ```bash
-helm install my-shield ./deploy/helm/cosmac
+helm install my-cosmac ./deploy/helm/cosmac
 ```
 
 ## Configuration
@@ -82,13 +82,13 @@ curl http://localhost:8000/health
 helm lint ./deploy/helm/cosmac
 
 # Render templates without applying
-helm template my-shield ./deploy/helm/cosmac
+helm template my-cosmac ./deploy/helm/cosmac
 ```
 
 ## Uninstall
 
 ```bash
-helm uninstall my-shield
+helm uninstall my-cosmac
 ```
 
 If `persistence.enabled` was set, the PVC remains by design — delete it manually if you want to discard the vault and history databases.

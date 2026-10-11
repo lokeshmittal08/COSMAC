@@ -39,14 +39,7 @@ dependencies = [
     "regex>=2023.0",
     "sentence-transformers>=2.0",
     "chromadb>=0.5",
-    # ed25519 minisign verification for the federated threat-intel feed
-    # (SignaturesClient in cosmac.signatures). Added in v0.7.4:
-    # was previously a transitively-missing dep, causing a documented-but-
-    # broken import for anyone doing a base `pip install cosmac`.
-    # Floor bumped to 50.0.0 in v0.8.0 so `pip-audit`/Dependabot won't
-    # flag CVE-2026-69247/-69248/-69249 (fixed in 49.0.0/50.0.0); none
-    # reachable from our ed25519 code path, but the floor should not
-    # admit them.
+    # ed25519 signature verification for signed signature feeds
     "cryptography>=50.0.0",
 ]
 
@@ -70,13 +63,11 @@ ml = [
     "transformers>=4.30",
     "optimum[onnxruntime]>=1.12",
 ]
-# v0.5.0 — pluggable extras for the new lazy-loaded features.
+# Optional extras for lazy-loaded features
 observability = ["prometheus_client>=0.17"]
 sentiment = ["vaderSentiment>=3.3"]
 language = ["langdetect>=1.0"]
-# v0.8.0 — receipt-format adapters for ToolResultGuard (interop layer for
-# upstream capability enforcement projects; cosmac verifies, does
-# not mint tokens). See docs/capabilities/receipt-adapter.md.
+# Receipt-format adapters for ToolResultGuard
 capabilities-pipelock = ["pipelock-verify>=0.1"]
 # PyJWT lower bound raised to 2.13 to close CVE-2024-53861 (issuer
 # partial-match, reachable via issuer=) plus CVE-2026-32597 (unknown

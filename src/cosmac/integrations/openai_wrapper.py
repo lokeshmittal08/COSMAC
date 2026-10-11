@@ -49,8 +49,8 @@ class CosmacOpenAI:
         from cosmac.integrations.openai_wrapper import CosmacOpenAI
 
         client = OpenAI()
-        shield = CosmacOpenAI(client=client, mode="block")
-        response = shield.create(model="gpt-4o", messages=[...])
+        guard = CosmacOpenAI(client=client, mode="block")
+        response = guard.create(model="gpt-4o", messages=[...])
     """
 
     def __init__(

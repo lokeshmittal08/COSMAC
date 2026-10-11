@@ -4,18 +4,21 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - COSMAC_MODE=block
-      - COSMAC_THRESHOLD=0.7
-      - COSMAC_DATA_DIR=/home/shield/data
+      - COSMAC_DATA_DIR=/home/cosmac/data
+      # Set keys to require authentication:
+      # - COSMAC_API_KEYS=key-for-the-app
+      # - COSMAC_ADMIN_KEYS=key-for-the-operator
     volumes:
-      - shield-data:/home/shield/data
+      - cosmac-data:/home/cosmac/data
+      - cosmac-models:/home/cosmac/.cache
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/livez"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 60s
     restart: unless-stopped
 
 volumes:
-  shield-data:
+  cosmac-data:
+  cosmac-models:

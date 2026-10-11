@@ -46,3 +46,6 @@ mkdocs.yml
 *.md
 LICENSE
 Makefile
+
+# The package metadata reads the README
+!README.md

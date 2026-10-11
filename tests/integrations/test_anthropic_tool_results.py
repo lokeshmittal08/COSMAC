@@ -68,8 +68,8 @@ class TestToolResultBlockScanning:
         )
 
     def test_clean_tool_result_forwards(self, engine):
-        shield = self._wrap(engine, mode="block", tool_result_mode="block")
-        shield.create(
+        guard = self._wrap(engine, mode="block", tool_result_mode="block")
+        guard.create(
             model="claude-opus-4-7",
             max_tokens=64,
             messages=[
@@ -86,12 +86,12 @@ class TestToolResultBlockScanning:
             ],
         )
         # Reached the stub -> no BLOCK raised.
-        assert len(shield._client.messages.calls) == 1
+        assert len(guard._client.messages.calls) == 1
 
     def test_malicious_tool_result_blocks(self, engine):
-        shield = self._wrap(engine, mode="block", tool_result_mode="block")
+        guard = self._wrap(engine, mode="block", tool_result_mode="block")
         with pytest.raises(ValueError, match="tool_result"):
-            shield.create(
+            guard.create(
                 model="claude-opus-4-7",
                 max_tokens=64,
                 messages=[
@@ -111,16 +111,16 @@ class TestToolResultBlockScanning:
                 ],
             )
         # BLOCK short-circuits before forwarding.
-        assert shield._client.messages.calls == []
+        assert guard._client.messages.calls == []
 
     def test_scan_tool_results_flag_disabled(self, engine):
-        shield = self._wrap(
+        guard = self._wrap(
             engine,
             mode="block",
             tool_result_mode="block",
             scan_tool_results=False,
         )
-        shield.create(
+        guard.create(
             model="claude-opus-4-7",
             max_tokens=64,
             messages=[
@@ -137,13 +137,13 @@ class TestToolResultBlockScanning:
             ],
         )
         # Disabled -> forwarded even though content is malicious.
-        assert len(shield._client.messages.calls) == 1
+        assert len(guard._client.messages.calls) == 1
 
     def test_multiple_tool_result_blocks_scanned(self, engine):
-        shield = self._wrap(engine, mode="block", tool_result_mode="block")
+        guard = self._wrap(engine, mode="block", tool_result_mode="block")
         # Clean first, malicious second — expect BLOCK.
         with pytest.raises(ValueError):
-            shield.create(
+            guard.create(
                 model="claude-opus-4-7",
                 max_tokens=64,
                 messages=[
@@ -166,9 +166,9 @@ class TestToolResultBlockScanning:
             )
 
     def test_tool_result_mode_flag_does_not_raise(self, engine):
-        shield = self._wrap(engine, mode="block", tool_result_mode="flag")
+        guard = self._wrap(engine, mode="block", tool_result_mode="flag")
         # Malicious tool_result — flag mode should log, not raise.
-        shield.create(
+        guard.create(
             model="claude-opus-4-7",
             max_tokens=64,
             messages=[
@@ -184,12 +184,12 @@ class TestToolResultBlockScanning:
                 }
             ],
         )
-        assert len(shield._client.messages.calls) == 1
+        assert len(guard._client.messages.calls) == 1
 
     def test_string_content_tool_result_still_scanned(self, engine):
-        shield = self._wrap(engine, mode="block", tool_result_mode="block")
+        guard = self._wrap(engine, mode="block", tool_result_mode="block")
         with pytest.raises(ValueError):
-            shield.create(
+            guard.create(
                 model="claude-opus-4-7",
                 max_tokens=64,
                 messages=[
@@ -210,11 +210,11 @@ class TestToolResultBlockScanning:
             )
 
     def test_input_scan_still_active_alongside_tool_result_scan(self, engine):
-        shield = self._wrap(engine, mode="block", tool_result_mode="block")
+        guard = self._wrap(engine, mode="block", tool_result_mode="block")
         # A malicious plain-text user message should still be caught by the
         # input gate independent of tool_result scanning.
         with pytest.raises(ValueError):
-            shield.create(
+            guard.create(
                 model="claude-opus-4-7",
                 max_tokens=64,
                 messages=[
@@ -230,14 +230,14 @@ class TestToolResultBlockScanning:
 
 class TestFamiliesInException:
     def test_block_message_names_families(self, engine):
-        shield = CosmacAnthropic(
+        guard = CosmacAnthropic(
             client=_StubClient(),
             engine=engine,
             mode="block",
             tool_result_mode="block",
         )
         try:
-            shield.create(
+            guard.create(
                 model="claude-opus-4-7",
                 max_tokens=64,
                 messages=[

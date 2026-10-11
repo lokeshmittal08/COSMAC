@@ -1,74 +1,68 @@
 # =============================================================================
-# cosmac Docker image — multi-stage build for minimal runtime footprint
+# COSMAC service image: REST API and gateway on port 8000
 # =============================================================================
 
 # ---------------------------------------------------------------------------
-# Stage 1: Build — install dependencies and build the wheel
+# Stage 1: build. Install the package and its dependencies into a prefix.
 # ---------------------------------------------------------------------------
 FROM python:3.12-slim AS builder
 
 WORKDIR /build
 
-# System deps needed for building wheels (regex, pydantic-core, etc.)
+# Compilers for any dependency without a prebuilt wheel
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc g++ && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy only dependency metadata first for better layer caching
-COPY pyproject.toml ./
+# CPU-only PyTorch. The default x86-64 wheel bundles GPU libraries the
+# service does not use and adds several gigabytes to the image.
+RUN pip install --no-cache-dir --prefix=/install torch \
+    --index-url https://download.pytorch.org/whl/cpu
+
+COPY pyproject.toml README.md ./
 COPY src/ ./src/
 
-# Build a wheel and install into a prefix that we can copy later
-RUN pip install --no-cache-dir --prefix=/install "." && \
-    pip install --no-cache-dir --prefix=/install "fastapi>=0.100" "uvicorn[standard]>=0.20" "httpx>=0.24" "python-multipart>=0.0.9"
+# The service, PDF reading and OCR for images
+RUN PYTHONPATH=/install/lib/python3.12/site-packages \
+    pip install --no-cache-dir --prefix=/install ".[fastapi,documents]" "uvicorn[standard]>=0.20"
 
 # ---------------------------------------------------------------------------
-# Stage 2: Runtime — lean image with only what we need
+# Stage 2: runtime
 # ---------------------------------------------------------------------------
 FROM python:3.12-slim
 
-# --- OCI / opencontainers labels -------------------------------------------
-LABEL maintainer="cosmac contributors" \
-      version="0.7.5" \
-      description="Prompt-injection detection engine for LLM applications" \
-      org.opencontainers.image.title="cosmac" \
-      org.opencontainers.image.description="Prompt-injection detection engine for LLM applications" \
-      org.opencontainers.image.version="0.7.5" \
+LABEL org.opencontainers.image.title="cosmac" \
+      org.opencontainers.image.description="Prompt injection firewall for AI agents" \
       org.opencontainers.image.licenses="Apache-2.0"
 
-# Install curl for the HEALTHCHECK and runtime needs
+# curl for the health check; libgl1 and libglib2.0-0 for the OCR engine
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
+    apt-get install -y --no-install-recommends curl libgl1 libglib2.0-0 && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy installed Python packages from builder stage
 COPY --from=builder /install /usr/local
 
-# --- Non-root user (security best practice) ---------------------------------
-RUN groupadd --gid 1000 shield && \
-    useradd --uid 1000 --gid shield --create-home shield
+# Run as a non-root user
+RUN groupadd --gid 1000 cosmac && \
+    useradd --uid 1000 --gid cosmac --create-home cosmac
 
-# Create writable data directory for SQLite databases, vault, etc.
-RUN mkdir -p /home/shield/data && chown -R shield:shield /home/shield/data
+# Writable directory for local state. Models are downloaded on first start
+# into /home/cosmac/.cache; mount a volume there to keep them across restarts.
+RUN mkdir -p /home/cosmac/data /home/cosmac/.cache && chown -R cosmac:cosmac /home/cosmac
 
-USER shield
-WORKDIR /home/shield
+USER cosmac
+WORKDIR /home/cosmac
 
-# --- Environment variables ---------------------------------------------------
-ENV COSMAC_MODE=block \
-    COSMAC_THRESHOLD=0.7 \
-    COSMAC_DATA_DIR=/home/shield/data \
+ENV COSMAC_DATA_DIR=/home/cosmac/data \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-# --- Health check ------------------------------------------------------------
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+# Liveness only. Use /readyz to know when the ML classifier has loaded.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/livez || exit 1
 
-# --- Expose API port ---------------------------------------------------------
 EXPOSE 8000
 
-# --- Entrypoint --------------------------------------------------------------
 # Default: run the REST API server.
-# Override with CLI:  docker run cosmac cosmac scan "text"
+# Override for the CLI:  docker run --entrypoint cosmac cosmac scan "text"
 ENTRYPOINT ["python", "-m", "cosmac.api"]

@@ -52,7 +52,9 @@ How it is built is described in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Try it in five minutes
 
-Requires Python 3.10 or newer and about 4 GB of free disk space for the ML libraries and models.
+Requires Python 3.10 or newer and about 3 GB of free disk space: roughly 2 GB for the Python libraries and 0.8 GB for the two models downloaded on first run. The optional second classifier adds 0.7 GB. On Linux x86-64, `pip` installs a GPU build of PyTorch by default, which is considerably larger; to avoid it, run `pip install torch --index-url https://download.pytorch.org/whl/cpu` first.
+
+Prefer a container? Skip to [Run with Docker](#run-with-docker).
 
 ### 1. Install
 
@@ -207,6 +209,16 @@ For a binary file, pass its bytes: `inspector.inspect(open("report.pdf", "rb").r
 | `GET /health`, `GET /version`, `GET /detectors` | Service information |
 
 Both inspect endpoints accept `mode` (`balanced`, `cautious` or `strict`; see [Actions and modes](#actions-and-modes)) and `declared_type` (a format hint: `markdown`, `source_code` and `ocr_text` cannot be detected from the content, so name them when you know).
+
+### Run with Docker
+
+```bash
+docker compose up --build        # or: docker build -t cosmac . && docker run -p 8000:8000 cosmac
+curl -s localhost:8000/readyz
+curl -s -F "file=@demo/samples/travel_policy.pdf" localhost:8000/v1/inspect/file
+```
+
+The image is about 2.9 GB and includes PDF reading and OCR. It runs as a non-root user and downloads the models (about 0.8 GB) on first start; the compose file keeps them in a volume so later starts are quick. To require authentication, set `COSMAC_API_KEYS` and `COSMAC_ADMIN_KEYS` in `docker-compose.yml` or with `-e`.
 
 ### Authentication
 

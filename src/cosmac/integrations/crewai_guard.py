@@ -60,10 +60,10 @@ class CosmacCrewAITool(_CrewAIBaseTool):
         from crewai import Agent
         from cosmac.integrations.crewai_guard import CosmacCrewAITool
 
-        shield_tool = CosmacCrewAITool()
+        guard_tool = CosmacCrewAITool()
         agent = Agent(
             role="Secure Assistant",
-            tools=[shield_tool],
+            tools=[guard_tool],
         )
     """
 

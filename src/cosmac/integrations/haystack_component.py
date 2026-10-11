@@ -8,20 +8,20 @@ Three common wiring patterns:
 
 1. **Input gate** — scan user query before it reaches downstream:
 
-       pipeline.add_component("shield", CosmacGuard())
-       pipeline.connect("shield.query", "retriever.query")
+       pipeline.add_component("guard", CosmacGuard())
+       pipeline.connect("guard.query", "retriever.query")
 
 2. **Tool-result / RAG gate** — scan each retrieved document for
    indirect injection (d015 RAG poisoning fires here):
 
-       pipeline.add_component("doc_shield", CosmacGuard())
-       pipeline.connect("retriever.documents", "doc_shield.documents")
+       pipeline.add_component("doc_guard", CosmacGuard())
+       pipeline.connect("retriever.documents", "doc_guard.documents")
 
 3. **Output gate** — scan the generator's answer for PII, prompt
    leakage, toxicity (9 output scanners fire here):
 
-       pipeline.add_component("out_shield", CosmacOutputGuard())
-       pipeline.connect("llm.replies", "out_shield.text")
+       pipeline.add_component("out_guard", CosmacOutputGuard())
+       pipeline.connect("llm.replies", "out_guard.text")
 
 All three raise ``ValueError`` on ``mode="block"`` (default). Change to
 ``mode="flag"`` to log-and-pass, or ``mode="log"`` for silent observation.

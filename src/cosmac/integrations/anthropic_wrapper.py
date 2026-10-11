@@ -56,8 +56,8 @@ class CosmacAnthropic:
         from cosmac.integrations.anthropic_wrapper import CosmacAnthropic
 
         client = Anthropic()
-        shield = CosmacAnthropic(client=client, mode="block")
-        response = shield.create(
+        guard = CosmacAnthropic(client=client, mode="block")
+        response = guard.create(
             model="claude-sonnet-4-20250514",
             max_tokens=1024,
             messages=[{"role": "user", "content": "Hello"}],

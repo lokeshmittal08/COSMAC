@@ -372,8 +372,8 @@ There are two layers.
 - **Local or single host:** `uvicorn cosmac.api:app --port 8000`.
 - **Readiness and liveness:** point the orchestrator's probes at `/readyz` and `/livez`. The first start downloads the ML classifier, so allow time before the first readiness check.
 - **Scaling:** the service keeps no state that requests depend on, so instances can run side by side. The rate limiter and the verdict cache are per instance.
-- **Resources:** the ML classifier runs on CPU. Plan memory for the model and for document parsing.
-- **Containers:** a `Dockerfile`, a `docker-compose.yml` and a Helm chart in `deploy/helm/` are included as starting points. They have not been exercised as part of the current test suite.
+- **Resources:** the ML classifier runs on CPU. Plan about 3 GB of disk (libraries and models) and memory for the model and for document parsing.
+- **Containers:** `docker compose up --build` builds and starts the service image (about 2.9 GB, CPU-only, non-root, with PDF and OCR support). Models are downloaded on first start into a volume. `Dockerfile.mcp` (the MCP server image) and the Helm chart in `deploy/helm/` are starting points that have not been exercised.
 
 ## 13. Known limits
 
