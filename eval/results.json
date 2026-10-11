@@ -1,0 +1,1396 @@
+{
+  "generated": "2026-10-11 17:30:08",
+  "engine_chat": {
+    "attacks_blocked": {
+      "k": 95,
+      "n": 120,
+      "pct": 79.2,
+      "ci95": [
+        71.1,
+        85.5
+      ]
+    },
+    "benign_blocked": {
+      "k": 32,
+      "n": 120,
+      "pct": 26.7,
+      "ci95": [
+        19.6,
+        35.2
+      ]
+    },
+    "by_attack_type": {
+      "context_poisoning": {
+        "k": 12,
+        "n": 13,
+        "pct": 92.3,
+        "ci95": [
+          66.7,
+          98.6
+        ]
+      },
+      "credential_theft": {
+        "k": 10,
+        "n": 13,
+        "pct": 76.9,
+        "ci95": [
+          49.7,
+          91.8
+        ]
+      },
+      "encoded_instructions": {
+        "k": 15,
+        "n": 16,
+        "pct": 93.8,
+        "ci95": [
+          71.7,
+          98.9
+        ]
+      },
+      "indirect_injection": {
+        "k": 9,
+        "n": 14,
+        "pct": 64.3,
+        "ci95": [
+          38.8,
+          83.7
+        ]
+      },
+      "instruction_override": {
+        "k": 13,
+        "n": 13,
+        "pct": 100.0,
+        "ci95": [
+          77.2,
+          100.0
+        ]
+      },
+      "multi_step_jailbreak": {
+        "k": 5,
+        "n": 12,
+        "pct": 41.7,
+        "ci95": [
+          19.3,
+          68.0
+        ]
+      },
+      "role_change": {
+        "k": 12,
+        "n": 13,
+        "pct": 92.3,
+        "ci95": [
+          66.7,
+          98.6
+        ]
+      },
+      "secret_extraction": {
+        "k": 12,
+        "n": 13,
+        "pct": 92.3,
+        "ci95": [
+          66.7,
+          98.6
+        ]
+      },
+      "tool_abuse": {
+        "k": 7,
+        "n": 13,
+        "pct": 53.8,
+        "ci95": [
+          29.1,
+          76.8
+        ]
+      }
+    }
+  },
+  "raw_engine_on_documents": {
+    "format_set": {
+      "malicious_blocked_or_flagged": {
+        "k": 39,
+        "n": 39,
+        "pct": 100.0,
+        "ci95": [
+          91.0,
+          100.0
+        ]
+      },
+      "benign_blocked_or_flagged": {
+        "k": 24,
+        "n": 31,
+        "pct": 77.4,
+        "ci95": [
+          60.2,
+          88.6
+        ]
+      }
+    },
+    "carrier_set": {
+      "attack_documents_blocked": {
+        "k": 525,
+        "n": 600,
+        "pct": 87.5,
+        "ci95": [
+          84.6,
+          89.9
+        ]
+      },
+      "benign_documents_blocked": {
+        "k": 260,
+        "n": 360,
+        "pct": 72.2,
+        "ci95": [
+          67.4,
+          76.6
+        ]
+      }
+    }
+  },
+  "inspector": {
+    "balanced": {
+      "format_set": {
+        "malicious_neutralised": {
+          "k": 39,
+          "n": 39,
+          "pct": 100.0,
+          "ci95": [
+            91.0,
+            100.0
+          ]
+        },
+        "benign_disrupted": {
+          "k": 2,
+          "n": 31,
+          "pct": 6.5,
+          "ci95": [
+            1.8,
+            20.7
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 2,
+          "n": 31,
+          "pct": 6.5,
+          "ci95": [
+            1.8,
+            20.7
+          ]
+        }
+      },
+      "carrier_set": {
+        "attacks_neutralised": {
+          "k": 358,
+          "n": 600,
+          "pct": 59.7,
+          "ci95": [
+            55.7,
+            63.5
+          ]
+        },
+        "hidden_channels": {
+          "k": 240,
+          "n": 240,
+          "pct": 100.0,
+          "ci95": [
+            98.4,
+            100.0
+          ]
+        },
+        "visible_channels": {
+          "k": 118,
+          "n": 360,
+          "pct": 32.8,
+          "ci95": [
+            28.1,
+            37.8
+          ]
+        },
+        "by_channel": {
+          "html_hidden": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          },
+          "html_visible": {
+            "k": 34,
+            "n": 120,
+            "pct": 28.3,
+            "ci95": [
+              21.0,
+              37.0
+            ]
+          },
+          "json_field": {
+            "k": 41,
+            "n": 120,
+            "pct": 34.2,
+            "ci95": [
+              26.3,
+              43.0
+            ]
+          },
+          "email_body": {
+            "k": 43,
+            "n": 120,
+            "pct": 35.8,
+            "ci95": [
+              27.8,
+              44.7
+            ]
+          },
+          "markdown_comment": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          }
+        },
+        "by_attack_type": {
+          "context_poisoning": {
+            "k": 30,
+            "n": 65,
+            "pct": 46.2,
+            "ci95": [
+              34.6,
+              58.1
+            ]
+          },
+          "credential_theft": {
+            "k": 41,
+            "n": 65,
+            "pct": 63.1,
+            "ci95": [
+              50.9,
+              73.8
+            ]
+          },
+          "encoded_instructions": {
+            "k": 68,
+            "n": 80,
+            "pct": 85.0,
+            "ci95": [
+              75.6,
+              91.2
+            ]
+          },
+          "indirect_injection": {
+            "k": 45,
+            "n": 70,
+            "pct": 64.3,
+            "ci95": [
+              52.6,
+              74.5
+            ]
+          },
+          "instruction_override": {
+            "k": 35,
+            "n": 65,
+            "pct": 53.8,
+            "ci95": [
+              41.9,
+              65.4
+            ]
+          },
+          "multi_step_jailbreak": {
+            "k": 30,
+            "n": 60,
+            "pct": 50.0,
+            "ci95": [
+              37.7,
+              62.3
+            ]
+          },
+          "role_change": {
+            "k": 44,
+            "n": 65,
+            "pct": 67.7,
+            "ci95": [
+              55.6,
+              77.8
+            ]
+          },
+          "secret_extraction": {
+            "k": 35,
+            "n": 65,
+            "pct": 53.8,
+            "ci95": [
+              41.9,
+              65.4
+            ]
+          },
+          "tool_abuse": {
+            "k": 30,
+            "n": 65,
+            "pct": 46.2,
+            "ci95": [
+              34.6,
+              58.1
+            ]
+          }
+        },
+        "benign_text_lost": {
+          "k": 39,
+          "n": 360,
+          "pct": 10.8,
+          "ci95": [
+            8.0,
+            14.5
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 29,
+          "n": 360,
+          "pct": 8.1,
+          "ci95": [
+            5.7,
+            11.3
+          ]
+        },
+        "tuning_half": {
+          "attacks_neutralised": {
+            "k": 180,
+            "n": 300,
+            "pct": 60.0,
+            "ci95": [
+              54.4,
+              65.4
+            ]
+          },
+          "benign_text_lost": {
+            "k": 18,
+            "n": 180,
+            "pct": 10.0,
+            "ci95": [
+              6.4,
+              15.3
+            ]
+          }
+        },
+        "check_half": {
+          "attacks_neutralised": {
+            "k": 178,
+            "n": 300,
+            "pct": 59.3,
+            "ci95": [
+              53.7,
+              64.7
+            ]
+          },
+          "benign_text_lost": {
+            "k": 21,
+            "n": 180,
+            "pct": 11.7,
+            "ci95": [
+              7.8,
+              17.2
+            ]
+          }
+        },
+        "latency_ms_uncached_p95": 94.2
+      }
+    },
+    "cautious": {
+      "format_set": {
+        "malicious_neutralised": {
+          "k": 39,
+          "n": 39,
+          "pct": 100.0,
+          "ci95": [
+            91.0,
+            100.0
+          ]
+        },
+        "benign_disrupted": {
+          "k": 13,
+          "n": 31,
+          "pct": 41.9,
+          "ci95": [
+            26.4,
+            59.2
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 13,
+          "n": 31,
+          "pct": 41.9,
+          "ci95": [
+            26.4,
+            59.2
+          ]
+        }
+      },
+      "carrier_set": {
+        "attacks_neutralised": {
+          "k": 457,
+          "n": 600,
+          "pct": 76.2,
+          "ci95": [
+            72.6,
+            79.4
+          ]
+        },
+        "hidden_channels": {
+          "k": 240,
+          "n": 240,
+          "pct": 100.0,
+          "ci95": [
+            98.4,
+            100.0
+          ]
+        },
+        "visible_channels": {
+          "k": 217,
+          "n": 360,
+          "pct": 60.3,
+          "ci95": [
+            55.1,
+            65.2
+          ]
+        },
+        "by_channel": {
+          "html_hidden": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          },
+          "html_visible": {
+            "k": 66,
+            "n": 120,
+            "pct": 55.0,
+            "ci95": [
+              46.1,
+              63.6
+            ]
+          },
+          "json_field": {
+            "k": 80,
+            "n": 120,
+            "pct": 66.7,
+            "ci95": [
+              57.8,
+              74.5
+            ]
+          },
+          "email_body": {
+            "k": 71,
+            "n": 120,
+            "pct": 59.2,
+            "ci95": [
+              50.2,
+              67.5
+            ]
+          },
+          "markdown_comment": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          }
+        },
+        "by_attack_type": {
+          "context_poisoning": {
+            "k": 52,
+            "n": 65,
+            "pct": 80.0,
+            "ci95": [
+              68.7,
+              87.9
+            ]
+          },
+          "credential_theft": {
+            "k": 44,
+            "n": 65,
+            "pct": 67.7,
+            "ci95": [
+              55.6,
+              77.8
+            ]
+          },
+          "encoded_instructions": {
+            "k": 72,
+            "n": 80,
+            "pct": 90.0,
+            "ci95": [
+              81.5,
+              94.8
+            ]
+          },
+          "indirect_injection": {
+            "k": 49,
+            "n": 70,
+            "pct": 70.0,
+            "ci95": [
+              58.5,
+              79.5
+            ]
+          },
+          "instruction_override": {
+            "k": 51,
+            "n": 65,
+            "pct": 78.5,
+            "ci95": [
+              67.0,
+              86.7
+            ]
+          },
+          "multi_step_jailbreak": {
+            "k": 36,
+            "n": 60,
+            "pct": 60.0,
+            "ci95": [
+              47.4,
+              71.4
+            ]
+          },
+          "role_change": {
+            "k": 56,
+            "n": 65,
+            "pct": 86.2,
+            "ci95": [
+              75.7,
+              92.5
+            ]
+          },
+          "secret_extraction": {
+            "k": 55,
+            "n": 65,
+            "pct": 84.6,
+            "ci95": [
+              73.9,
+              91.4
+            ]
+          },
+          "tool_abuse": {
+            "k": 42,
+            "n": 65,
+            "pct": 64.6,
+            "ci95": [
+              52.5,
+              75.1
+            ]
+          }
+        },
+        "benign_text_lost": {
+          "k": 59,
+          "n": 360,
+          "pct": 16.4,
+          "ci95": [
+            12.9,
+            20.6
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 50,
+          "n": 360,
+          "pct": 13.9,
+          "ci95": [
+            10.7,
+            17.8
+          ]
+        },
+        "tuning_half": {
+          "attacks_neutralised": {
+            "k": 225,
+            "n": 300,
+            "pct": 75.0,
+            "ci95": [
+              69.8,
+              79.6
+            ]
+          },
+          "benign_text_lost": {
+            "k": 29,
+            "n": 180,
+            "pct": 16.1,
+            "ci95": [
+              11.5,
+              22.2
+            ]
+          }
+        },
+        "check_half": {
+          "attacks_neutralised": {
+            "k": 232,
+            "n": 300,
+            "pct": 77.3,
+            "ci95": [
+              72.3,
+              81.7
+            ]
+          },
+          "benign_text_lost": {
+            "k": 30,
+            "n": 180,
+            "pct": 16.7,
+            "ci95": [
+              11.9,
+              22.8
+            ]
+          }
+        },
+        "latency_ms_uncached_p95": 0.35
+      }
+    },
+    "strict": {
+      "format_set": {
+        "malicious_neutralised": {
+          "k": 39,
+          "n": 39,
+          "pct": 100.0,
+          "ci95": [
+            91.0,
+            100.0
+          ]
+        },
+        "benign_disrupted": {
+          "k": 18,
+          "n": 31,
+          "pct": 58.1,
+          "ci95": [
+            40.8,
+            73.6
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 18,
+          "n": 31,
+          "pct": 58.1,
+          "ci95": [
+            40.8,
+            73.6
+          ]
+        }
+      },
+      "carrier_set": {
+        "attacks_neutralised": {
+          "k": 499,
+          "n": 600,
+          "pct": 83.2,
+          "ci95": [
+            80.0,
+            85.9
+          ]
+        },
+        "hidden_channels": {
+          "k": 240,
+          "n": 240,
+          "pct": 100.0,
+          "ci95": [
+            98.4,
+            100.0
+          ]
+        },
+        "visible_channels": {
+          "k": 259,
+          "n": 360,
+          "pct": 71.9,
+          "ci95": [
+            67.1,
+            76.3
+          ]
+        },
+        "by_channel": {
+          "html_hidden": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          },
+          "html_visible": {
+            "k": 82,
+            "n": 120,
+            "pct": 68.3,
+            "ci95": [
+              59.6,
+              76.0
+            ]
+          },
+          "json_field": {
+            "k": 96,
+            "n": 120,
+            "pct": 80.0,
+            "ci95": [
+              72.0,
+              86.2
+            ]
+          },
+          "email_body": {
+            "k": 81,
+            "n": 120,
+            "pct": 67.5,
+            "ci95": [
+              58.7,
+              75.2
+            ]
+          },
+          "markdown_comment": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          }
+        },
+        "by_attack_type": {
+          "context_poisoning": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "credential_theft": {
+            "k": 52,
+            "n": 65,
+            "pct": 80.0,
+            "ci95": [
+              68.7,
+              87.9
+            ]
+          },
+          "encoded_instructions": {
+            "k": 75,
+            "n": 80,
+            "pct": 93.8,
+            "ci95": [
+              86.2,
+              97.3
+            ]
+          },
+          "indirect_injection": {
+            "k": 54,
+            "n": 70,
+            "pct": 77.1,
+            "ci95": [
+              66.0,
+              85.4
+            ]
+          },
+          "instruction_override": {
+            "k": 61,
+            "n": 65,
+            "pct": 93.8,
+            "ci95": [
+              85.2,
+              97.6
+            ]
+          },
+          "multi_step_jailbreak": {
+            "k": 39,
+            "n": 60,
+            "pct": 65.0,
+            "ci95": [
+              52.4,
+              75.8
+            ]
+          },
+          "role_change": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "secret_extraction": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "tool_abuse": {
+            "k": 44,
+            "n": 65,
+            "pct": 67.7,
+            "ci95": [
+              55.6,
+              77.8
+            ]
+          }
+        },
+        "benign_text_lost": {
+          "k": 90,
+          "n": 360,
+          "pct": 25.0,
+          "ci95": [
+            20.8,
+            29.7
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 86,
+          "n": 360,
+          "pct": 23.9,
+          "ci95": [
+            19.8,
+            28.6
+          ]
+        },
+        "tuning_half": {
+          "attacks_neutralised": {
+            "k": 248,
+            "n": 300,
+            "pct": 82.7,
+            "ci95": [
+              78.0,
+              86.5
+            ]
+          },
+          "benign_text_lost": {
+            "k": 36,
+            "n": 180,
+            "pct": 20.0,
+            "ci95": [
+              14.8,
+              26.4
+            ]
+          }
+        },
+        "check_half": {
+          "attacks_neutralised": {
+            "k": 251,
+            "n": 300,
+            "pct": 83.7,
+            "ci95": [
+              79.1,
+              87.4
+            ]
+          },
+          "benign_text_lost": {
+            "k": 54,
+            "n": 180,
+            "pct": 30.0,
+            "ci95": [
+              23.8,
+              37.1
+            ]
+          }
+        },
+        "latency_ms_uncached_p95": 0.34
+      }
+    },
+    "balanced+second": {
+      "format_set": {
+        "malicious_neutralised": {
+          "k": 39,
+          "n": 39,
+          "pct": 100.0,
+          "ci95": [
+            91.0,
+            100.0
+          ]
+        },
+        "benign_disrupted": {
+          "k": 17,
+          "n": 31,
+          "pct": 54.8,
+          "ci95": [
+            37.8,
+            70.8
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 17,
+          "n": 31,
+          "pct": 54.8,
+          "ci95": [
+            37.8,
+            70.8
+          ]
+        }
+      },
+      "carrier_set": {
+        "attacks_neutralised": {
+          "k": 496,
+          "n": 600,
+          "pct": 82.7,
+          "ci95": [
+            79.4,
+            85.5
+          ]
+        },
+        "hidden_channels": {
+          "k": 240,
+          "n": 240,
+          "pct": 100.0,
+          "ci95": [
+            98.4,
+            100.0
+          ]
+        },
+        "visible_channels": {
+          "k": 256,
+          "n": 360,
+          "pct": 71.1,
+          "ci95": [
+            66.2,
+            75.6
+          ]
+        },
+        "by_channel": {
+          "html_hidden": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          },
+          "html_visible": {
+            "k": 81,
+            "n": 120,
+            "pct": 67.5,
+            "ci95": [
+              58.7,
+              75.2
+            ]
+          },
+          "json_field": {
+            "k": 95,
+            "n": 120,
+            "pct": 79.2,
+            "ci95": [
+              71.1,
+              85.5
+            ]
+          },
+          "email_body": {
+            "k": 80,
+            "n": 120,
+            "pct": 66.7,
+            "ci95": [
+              57.8,
+              74.5
+            ]
+          },
+          "markdown_comment": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          }
+        },
+        "by_attack_type": {
+          "context_poisoning": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "credential_theft": {
+            "k": 52,
+            "n": 65,
+            "pct": 80.0,
+            "ci95": [
+              68.7,
+              87.9
+            ]
+          },
+          "encoded_instructions": {
+            "k": 75,
+            "n": 80,
+            "pct": 93.8,
+            "ci95": [
+              86.2,
+              97.3
+            ]
+          },
+          "indirect_injection": {
+            "k": 54,
+            "n": 70,
+            "pct": 77.1,
+            "ci95": [
+              66.0,
+              85.4
+            ]
+          },
+          "instruction_override": {
+            "k": 61,
+            "n": 65,
+            "pct": 93.8,
+            "ci95": [
+              85.2,
+              97.6
+            ]
+          },
+          "multi_step_jailbreak": {
+            "k": 39,
+            "n": 60,
+            "pct": 65.0,
+            "ci95": [
+              52.4,
+              75.8
+            ]
+          },
+          "role_change": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "secret_extraction": {
+            "k": 55,
+            "n": 65,
+            "pct": 84.6,
+            "ci95": [
+              73.9,
+              91.4
+            ]
+          },
+          "tool_abuse": {
+            "k": 44,
+            "n": 65,
+            "pct": 67.7,
+            "ci95": [
+              55.6,
+              77.8
+            ]
+          }
+        },
+        "benign_text_lost": {
+          "k": 78,
+          "n": 360,
+          "pct": 21.7,
+          "ci95": [
+            17.7,
+            26.2
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 74,
+          "n": 360,
+          "pct": 20.6,
+          "ci95": [
+            16.7,
+            25.0
+          ]
+        },
+        "tuning_half": {
+          "attacks_neutralised": {
+            "k": 248,
+            "n": 300,
+            "pct": 82.7,
+            "ci95": [
+              78.0,
+              86.5
+            ]
+          },
+          "benign_text_lost": {
+            "k": 33,
+            "n": 180,
+            "pct": 18.3,
+            "ci95": [
+              13.4,
+              24.6
+            ]
+          }
+        },
+        "check_half": {
+          "attacks_neutralised": {
+            "k": 248,
+            "n": 300,
+            "pct": 82.7,
+            "ci95": [
+              78.0,
+              86.5
+            ]
+          },
+          "benign_text_lost": {
+            "k": 45,
+            "n": 180,
+            "pct": 25.0,
+            "ci95": [
+              19.2,
+              31.8
+            ]
+          }
+        },
+        "latency_ms_uncached_p95": 16.26
+      }
+    },
+    "cautious+second": {
+      "format_set": {
+        "malicious_neutralised": {
+          "k": 39,
+          "n": 39,
+          "pct": 100.0,
+          "ci95": [
+            91.0,
+            100.0
+          ]
+        },
+        "benign_disrupted": {
+          "k": 18,
+          "n": 31,
+          "pct": 58.1,
+          "ci95": [
+            40.8,
+            73.6
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 18,
+          "n": 31,
+          "pct": 58.1,
+          "ci95": [
+            40.8,
+            73.6
+          ]
+        }
+      },
+      "carrier_set": {
+        "attacks_neutralised": {
+          "k": 499,
+          "n": 600,
+          "pct": 83.2,
+          "ci95": [
+            80.0,
+            85.9
+          ]
+        },
+        "hidden_channels": {
+          "k": 240,
+          "n": 240,
+          "pct": 100.0,
+          "ci95": [
+            98.4,
+            100.0
+          ]
+        },
+        "visible_channels": {
+          "k": 259,
+          "n": 360,
+          "pct": 71.9,
+          "ci95": [
+            67.1,
+            76.3
+          ]
+        },
+        "by_channel": {
+          "html_hidden": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          },
+          "html_visible": {
+            "k": 82,
+            "n": 120,
+            "pct": 68.3,
+            "ci95": [
+              59.6,
+              76.0
+            ]
+          },
+          "json_field": {
+            "k": 96,
+            "n": 120,
+            "pct": 80.0,
+            "ci95": [
+              72.0,
+              86.2
+            ]
+          },
+          "email_body": {
+            "k": 81,
+            "n": 120,
+            "pct": 67.5,
+            "ci95": [
+              58.7,
+              75.2
+            ]
+          },
+          "markdown_comment": {
+            "k": 120,
+            "n": 120,
+            "pct": 100.0,
+            "ci95": [
+              96.9,
+              100.0
+            ]
+          }
+        },
+        "by_attack_type": {
+          "context_poisoning": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "credential_theft": {
+            "k": 52,
+            "n": 65,
+            "pct": 80.0,
+            "ci95": [
+              68.7,
+              87.9
+            ]
+          },
+          "encoded_instructions": {
+            "k": 75,
+            "n": 80,
+            "pct": 93.8,
+            "ci95": [
+              86.2,
+              97.3
+            ]
+          },
+          "indirect_injection": {
+            "k": 54,
+            "n": 70,
+            "pct": 77.1,
+            "ci95": [
+              66.0,
+              85.4
+            ]
+          },
+          "instruction_override": {
+            "k": 61,
+            "n": 65,
+            "pct": 93.8,
+            "ci95": [
+              85.2,
+              97.6
+            ]
+          },
+          "multi_step_jailbreak": {
+            "k": 39,
+            "n": 60,
+            "pct": 65.0,
+            "ci95": [
+              52.4,
+              75.8
+            ]
+          },
+          "role_change": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "secret_extraction": {
+            "k": 58,
+            "n": 65,
+            "pct": 89.2,
+            "ci95": [
+              79.4,
+              94.7
+            ]
+          },
+          "tool_abuse": {
+            "k": 44,
+            "n": 65,
+            "pct": 67.7,
+            "ci95": [
+              55.6,
+              77.8
+            ]
+          }
+        },
+        "benign_text_lost": {
+          "k": 78,
+          "n": 360,
+          "pct": 21.7,
+          "ci95": [
+            17.7,
+            26.2
+          ]
+        },
+        "benign_false_alarm": {
+          "k": 74,
+          "n": 360,
+          "pct": 20.6,
+          "ci95": [
+            16.7,
+            25.0
+          ]
+        },
+        "tuning_half": {
+          "attacks_neutralised": {
+            "k": 248,
+            "n": 300,
+            "pct": 82.7,
+            "ci95": [
+              78.0,
+              86.5
+            ]
+          },
+          "benign_text_lost": {
+            "k": 33,
+            "n": 180,
+            "pct": 18.3,
+            "ci95": [
+              13.4,
+              24.6
+            ]
+          }
+        },
+        "check_half": {
+          "attacks_neutralised": {
+            "k": 251,
+            "n": 300,
+            "pct": 83.7,
+            "ci95": [
+              79.1,
+              87.4
+            ]
+          },
+          "benign_text_lost": {
+            "k": 45,
+            "n": 180,
+            "pct": 25.0,
+            "ci95": [
+              19.2,
+              31.8
+            ]
+          }
+        },
+        "latency_ms_uncached_p95": 0.34
+      }
+    }
+  },
+  "second_opinion_model": "deepset/deberta-v3-base-injection"
+}

@@ -1,0 +1,67 @@
+# Claude Code
+.claude/
+.claude*
+.braid/
+CLAUDE.md
+CLAUDE.local.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Type checking
+.mypy_cache/
+
+# Linting
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# cosmac data
+.cosmac/
+cosmac.db
+
+# Windows artifacts
+nul
+plugins/n8n/node_modules/
+plugins/n8n/dist/
+plugins/n8n/package-lock.json
+
+# Outreach drafts (not for public repo)
+docs/drafts/
+
+# Benchmark raw datasets (fetched by users, not redistributed)
+data/harmbench_behaviors_text_all.csv
+data/garak_*.jsonl
+data/injecagent_*.json
+data/notinject/
+data/jailbreakbench_*
+data/jbb_*
+
+# Dify packaging artifacts
+dify.exe
+*.difypkg

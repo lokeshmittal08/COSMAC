@@ -1,0 +1,271 @@
+[project]
+name = "cosmac"
+version = "0.8.1"
+description = "Prompt injection firewall for AI agents"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "COSMAC contributors" }]
+keywords = [
+    "llm", "llm-security", "llm-firewall", "prompt-injection", "prompt-injection-detection",
+    "ai-safety", "guardrails", "firewall", "self-learning", "threat-intelligence",
+    "federated-feed", "langchain", "llamaindex", "crewai", "fastapi",
+    "deberta", "smith-waterman", "stylometric", "pii-detection", "red-team",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: FastAPI",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "click>=8.0",
+    "regex>=2023.0",
+    "sentence-transformers>=2.0",
+    "chromadb>=0.5",
+    # ed25519 minisign verification for the federated threat-intel feed
+    # (SignaturesClient in cosmac.signatures). Added in v0.7.4:
+    # was previously a transitively-missing dep, causing a documented-but-
+    # broken import for anyone doing a base `pip install cosmac`.
+    # Floor bumped to 50.0.0 in v0.8.0 so `pip-audit`/Dependabot won't
+    # flag CVE-2026-69247/-69248/-69249 (fixed in 49.0.0/50.0.0); none
+    # reachable from our ed25519 code path, but the floor should not
+    # admit them.
+    "cryptography>=50.0.0",
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.100", "starlette>=0.27", "httpx>=0.24", "python-multipart>=0.0.9"]
+flask = ["flask>=2.0"]
+langchain = ["langchain-core>=0.1"]
+llamaindex = ["llama-index-core>=0.10"]
+haystack = ["haystack-ai>=2.0"]
+pydantic-ai = ["pydantic-ai>=0.0.10"]
+django = ["django>=4.0"]
+crewai = ["crewai>=0.70", "crewai-tools>=0.12"]
+# Upper bound: the server code targets the mcp 1.x API; 2.x removed
+# Server.list_tools / Tool.inputSchema and breaks it. Port, then lift.
+mcp = ["mcp>=1.10,<2", "anyio>=3.7"]
+# PDF text extraction, and OCR for images. Word files need no extra.
+documents = ["pypdf>=4.0", "pillow>=10.0", "rapidocr-onnxruntime>=1.3"]
+openai = ["openai>=1.0"]
+anthropic = ["anthropic>=0.30"]
+ml = [
+    "transformers>=4.30",
+    "optimum[onnxruntime]>=1.12",
+]
+# v0.5.0 — pluggable extras for the new lazy-loaded features.
+observability = ["prometheus_client>=0.17"]
+sentiment = ["vaderSentiment>=3.3"]
+language = ["langdetect>=1.0"]
+# v0.8.0 — receipt-format adapters for ToolResultGuard (interop layer for
+# upstream capability enforcement projects; cosmac verifies, does
+# not mint tokens). See docs/capabilities/receipt-adapter.md.
+capabilities-pipelock = ["pipelock-verify>=0.1"]
+# PyJWT lower bound raised to 2.13 to close CVE-2024-53861 (issuer
+# partial-match, reachable via issuer=) plus CVE-2026-32597 (unknown
+# crit accepted, 2.12+), CVE-2026-48523 (algorithm allow-list bypass
+# via PyJWK, 2.12.1+), CVE-2026-48526 (public JWK accepted as HMAC
+# secret when mixed families are allowed, 2.13+). cryptography floor
+# is 50.0.0 to close CVE-2026-69247 (PKCS#7 Bleichenbacher oracle,
+# fixed 50.0.0), CVE-2026-69248 (name-constraint bypass, fixed 49.0.0)
+# and CVE-2026-69249 (path-building DoS, fixed 49.0.0); none reachable
+# from our verify path but pip-audit will flag lower floors.
+capabilities-jws = ["PyJWT>=2.13.0", "cryptography>=50.0.0"]
+all = ["cosmac[fastapi,flask,langchain,llamaindex,haystack,pydantic-ai,django,crewai,mcp,openai,anthropic,ml,observability,sentiment,language,capabilities-pipelock,capabilities-jws,documents]"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.21",
+    "ruff>=0.4",
+    "mypy>=1.8",
+    "pre-commit>=3.0",
+    "httpx>=0.24",
+    "mkdocs-material>=9.0",
+]
+
+[project.scripts]
+cosmac = "cosmac.cli:main"
+cosmac-hook = "cosmac.hooks:cosmac_hook"
+cosmac-pii-hook = "cosmac.hooks:cosmac_pii_hook"
+cosmac-mcp = "cosmac.mcp_server.__main__:main"
+
+[project.entry-points."cosmac.detectors"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cosmac"]
+
+[tool.ruff]
+target-version = "py310"
+src = ["src"]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM", "TCH", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Compliance-mapping data: URL strings and OWASP descriptions are data,
+# not code — wrapping them hurts readability and loses grep-ability.
+"src/cosmac/compliance/owasp_mapping.py" = ["E501"]
+# Attack-sequence database is a literal data table.
+"src/cosmac/detectors/_d028_attack_sequences.py" = ["E501"]
+# Built-in detectors embed long regex patterns and human-readable
+# descriptions that are clearer on a single line than wrapped.
+"src/cosmac/detectors/d0*.py" = ["E501"]
+# Regex tables and inline test documents read better unwrapped.
+"src/cosmac/ingest/extractors.py" = ["E501", "UP031"]
+"src/cosmac/inspector.py" = ["E501"]
+"src/cosmac/gateway.py" = ["E501"]
+"tests/test_gateway.py" = ["E501"]
+"src/cosmac/ingest/documents.py" = ["E501"]
+"tests/ingest/*.py" = ["E501"]
+"tests/test_inspector.py" = ["E501"]
+"tests/test_api_inspect.py" = ["E501"]
+"tests/detectors/test_d036_credential_theft.py" = ["E501"]
+"eval/**/*.py" = ["E501", "UP031"]
+"demo/*.py" = ["E501"]
+# Benchmarks print long report lines that are easier to read unwrapped,
+# and embed multilingual / mathematical glyphs as legitimate test data.
+"tests/benchmark_*.py" = ["E501", "RUF001", "RUF002", "RUF003"]
+# Homoglyph normalization pipeline & tests use Cyrillic / fullwidth chars
+# as the literal data being tested — flagging them is noise.
+"src/cosmac/normalization/pipeline.py" = ["RUF001"]
+"tests/normalization/test_pipeline.py" = ["RUF001", "RUF002", "RUF003"]
+"tests/detectors/test_d031_language_enforcement.py" = ["RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+# Bumped from 3.10 to 3.12 so mypy can parse PEP 695 `type X = ...` syntax
+# in numpy 2.x stubs (transitive dep via transformers). Project's runtime
+# requirement remains `requires-python = ">=3.10"` — the CI test matrix on
+# 3.10/3.11/3.12/3.13 catches any 3.12-only feature that sneaks into code.
+python_version = "3.12"
+strict = true
+packages = ["cosmac"]
+mypy_path = "src"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "cosmac.integrations.*",
+    "cosmac.vault.*",
+    "cosmac.detectors.d022_semantic_classifier",
+]
+disallow_any_generics = false
+warn_return_any = false
+disable_error_code = ["arg-type", "misc", "assignment", "return-value", "index", "list-item", "unused-ignore"]
+
+# mcp SDK's @server.list_tools() / @server.call_tool() decorators come from a
+# stubs-less package (mcp>=1.10); their untyped-call / untyped-decorator
+# rules are noise for a first-party server implementation.
+[[tool.mypy.overrides]]
+module = ["cosmac.mcp_server.*"]
+disable_error_code = ["no-untyped-call", "untyped-decorator", "misc"]
+
+# FastAPI handlers rely on response_model= for schema; return type annotations
+# on each async def are boilerplate. Benchmarks/runner call into a loose
+# `engine: object` parameter (CosmacEngine) that mypy can't narrow.
+[[tool.mypy.overrides]]
+module = [
+    "cosmac.api",
+    "cosmac.benchmarks.runner",
+]
+disable_error_code = ["no-untyped-def", "no-untyped-call"]
+
+# crewai_tools exposes BaseTool differently between versions; our integration
+# already gracefully falls back via try/except ImportError.
+[[tool.mypy.overrides]]
+module = ["crewai_tools", "crewai_tools.*"]
+ignore_missing_imports = true
+ignore_errors = true
+
+# yaml ships as a separate types-PyYAML package; CI installs it via [dev,all]
+# but contributor envs may not have it. d030 imports yaml — silence the
+# missing-stub error in the importing module since it varies by env.
+[[tool.mypy.overrides]]
+module = ["cosmac.detectors.d030_custom_rules"]
+disable_error_code = ["import-untyped", "unused-ignore"]
+
+# Receipt-format adapters lazy-import third-party packages (pipelock-verify,
+# PyJWT) that may or may not be installed depending on which
+# capabilities-* extra the user picked. Their `import` lines carry
+# `# type: ignore[import-not-found]` which mypy would flag as unused when
+# the package IS installed in the dev env. Also, PyJWT's `options=` param
+# expects a private TypedDict — passing a plain dict is idiomatic in the
+# real API but trips mypy in strict mode.
+[[tool.mypy.overrides]]
+module = ["cosmac.capabilities.*"]
+disable_error_code = ["arg-type", "unused-ignore", "import-not-found"]
+
+# haystack-ai and pydantic-ai are optional deps; their decorators aren't
+# fully typed for our usage, and the internal factory functions build
+# classes dynamically. Silence the resulting decorator/return-type noise.
+[[tool.mypy.overrides]]
+module = [
+    "cosmac.integrations.haystack_component",
+    "cosmac.integrations.pydantic_ai_guard",
+]
+disable_error_code = [
+    "no-untyped-def",
+    "no-untyped-call",
+    "untyped-decorator",
+    "assignment",
+    "misc",
+    "import-untyped",
+    "unused-ignore",
+]
+
+# numpy 2.x stubs use PEP 695 `type X = ...` statements; we don't depend on
+# numpy directly (transitive via transformers in [dev,all]). Skip its stubs
+# defensively in case the mypy python_version bump above isn't enough.
+[[tool.mypy.overrides]]
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "cosmac.config.*",
+    "cosmac.persistence.*",
+    "cosmac.feedback.*",
+    "cosmac.registry",
+]
+disallow_any_generics = false
+warn_return_any = false
+disable_error_code = ["arg-type", "no-any-return", "type-arg", "return-value", "assignment", "import-untyped"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=cosmac --cov-report=term-missing --cov-report=html"
+
+[tool.coverage.run]
+source = ["cosmac"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 60
+omit = [
+    "src/cosmac/vault/*",
+    "src/cosmac/integrations/django_middleware.py",
+    "src/cosmac/integrations/flask_middleware.py",
+    "src/cosmac/integrations/llamaindex_handler.py",
+]
