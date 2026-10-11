@@ -286,6 +286,24 @@ class CosmacEngine:
         self._postprocess_report(report, detections, input_text, risk_score)
         return report
 
+    def prime(self, texts: list[str]) -> None:
+        """Let detectors that can batch pre-compute their scores for ``texts``.
+
+        Scanning the same texts afterwards gives the same result, faster.
+        """
+        if self._normalizer is not None:
+            texts = [self._normalizer.normalize(t).text for t in texts]
+        for detector in self._registry.list_all():
+            prime = getattr(detector, "prime", None)
+            if prime is None:
+                continue
+            if not get_detector_config(self._config, detector.detector_id).get("enabled", True):
+                continue
+            try:
+                prime(texts)
+            except Exception as exc:
+                logger.warning("Detector %s failed to prime: %s", detector.detector_id, exc)
+
     def _check_allowlist_blocklist(
         self, input_text: str, scan_id: str, start: float
     ) -> ScanReport | None:

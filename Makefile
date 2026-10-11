@@ -1,4 +1,4 @@
-.PHONY: setup test lint typecheck ci clean docs
+.PHONY: setup test lint typecheck ci clean
 
 setup:
 	pip install -e ".[dev,all]"
@@ -25,9 +25,3 @@ ci: lint typecheck test
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov dist build *.egg-info
-
-docs:
-	mkdocs serve
-
-docs-build:
-	mkdocs build

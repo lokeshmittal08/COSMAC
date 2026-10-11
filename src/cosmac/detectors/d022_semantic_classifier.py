@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+import threading
+from collections import OrderedDict
 from typing import Any, ClassVar
 
 from cosmac.detectors.base import BaseDetector
@@ -11,6 +13,8 @@ from cosmac.models import DetectionResult, MatchDetail, Severity
 logger = logging.getLogger("cosmac.detectors.d022")
 
 _DEFAULT_MODEL = "protectai/deberta-v3-base-prompt-injection-v2"
+_SCORE_CACHE_SIZE = 4096
+_BATCH_SIZE = 16
 
 
 class SemanticClassifierDetector(BaseDetector):
@@ -40,6 +44,10 @@ class SemanticClassifierDetector(BaseDetector):
         self._chunk_size: int = 512
         self._chunk_stride: int = 384
         self._max_chunks: int = 8
+        # Chunk text -> (label, score). Filled by prime() so a document's
+        # segments go through the model in batches, and read by detect().
+        self._scores: OrderedDict[str, tuple[str, float]] = OrderedDict()
+        self._scores_lock = threading.Lock()
 
     def setup(self, config: dict[str, object]) -> None:
         """Read model_name and device from per-detector config."""
@@ -109,9 +117,7 @@ class SemanticClassifierDetector(BaseDetector):
             best_label = "SAFE"
             best_span = (0, min(len(input_text), self._chunk_size))
             for start, end, chunk_text in chunks:
-                pred = self._pipeline(chunk_text)
-                label = pred[0]["label"].upper()
-                score = float(pred[0]["score"])
+                label, score = self._classify(chunk_text)
                 if label == "INJECTION" and score > best_score:
                     best_score = score
                     best_label = "INJECTION"
@@ -163,10 +169,60 @@ class SemanticClassifierDetector(BaseDetector):
                 explanation=f"Classification failed: {exc}",
             )
 
+    def prime(self, texts: list[str]) -> None:
+        """Classify many texts in batches and remember the scores.
+
+        One model call per text is the slow part of inspecting a document.
+        Calling this first with every segment lets the following detect()
+        calls answer from memory.
+        """
+        if not self._ensure_pipeline() or self._pipeline is None:
+            return
+        with self._scores_lock:
+            pending = list(
+                dict.fromkeys(
+                    chunk
+                    for text in texts
+                    for _, _, chunk in self._chunk(text)
+                    if chunk and chunk not in self._scores
+                )
+            )
+        if len(pending) < 2:
+            return
+        # Similar lengths together, so short segments are not padded out to
+        # the longest one in the batch.
+        pending.sort(key=len)
+        try:
+            preds = self._pipeline(pending, batch_size=_BATCH_SIZE)
+        except Exception as exc:
+            logger.warning("Batched semantic classification failed: %s", exc)
+            return
+        for chunk, pred in zip(pending, preds, strict=True):
+            self._remember(chunk, str(pred["label"]).upper(), float(pred["score"]))
+
+    def _classify(self, chunk_text: str) -> tuple[str, float]:
+        with self._scores_lock:
+            cached = self._scores.get(chunk_text)
+            if cached is not None:
+                self._scores.move_to_end(chunk_text)
+                return cached
+        pred = self._pipeline(chunk_text)  # type: ignore[misc]
+        label, score = str(pred[0]["label"]).upper(), float(pred[0]["score"])
+        self._remember(chunk_text, label, score)
+        return label, score
+
+    def _remember(self, chunk_text: str, label: str, score: float) -> None:
+        with self._scores_lock:
+            self._scores[chunk_text] = (label, score)
+            while len(self._scores) > _SCORE_CACHE_SIZE:
+                self._scores.popitem(last=False)
+
     def teardown(self) -> None:
         """Release model resources."""
         self._pipeline = None
         self._available = None
+        with self._scores_lock:
+            self._scores.clear()
 
     def _chunk(self, text: str) -> list[tuple[int, int, str]]:
         """Split text into overlapping windows for chunked scoring.

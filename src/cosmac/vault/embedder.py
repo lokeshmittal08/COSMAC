@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import threading
+from collections import OrderedDict
 from typing import TYPE_CHECKING
 
 from cosmac.exceptions import EmbedderError
@@ -25,6 +27,7 @@ class Embedder:
     """
 
     _DIMENSION = 384
+    _PRIMED_SIZE = 4096
 
     def __init__(
         self,
@@ -34,6 +37,9 @@ class Embedder:
         self._model_name = model_name
         self._cache_dir = cache_dir
         self._model: SentenceTransformer | None = None
+        # Embeddings computed ahead of time by prime(), read back by encode().
+        self._primed: OrderedDict[str, list[float]] = OrderedDict()
+        self._primed_lock = threading.Lock()
 
     # ------------------------------------------------------------------
     # Public helpers
@@ -61,6 +67,10 @@ class Embedder:
         EmbedderError
             If the model cannot be loaded or encoding fails.
         """
+        with self._primed_lock:
+            primed = self._primed.get(text)
+        if primed is not None:
+            return primed
         try:
             if self._model is None:
                 self._load_model()
@@ -88,6 +98,19 @@ class Embedder:
             raise
         except Exception as exc:
             raise EmbedderError(f"Failed to encode batch: {exc}") from exc
+
+    def prime(self, texts: list[str]) -> None:
+        """Encode many texts in one batch so later :meth:`encode` calls are instant."""
+        with self._primed_lock:
+            pending = [t for t in dict.fromkeys(texts) if t and t not in self._primed]
+        if len(pending) < 2:
+            return
+        vectors = self.encode_batch(pending)
+        with self._primed_lock:
+            for text, vector in zip(pending, vectors, strict=True):
+                self._primed[text] = vector
+            while len(self._primed) > self._PRIMED_SIZE:
+                self._primed.popitem(last=False)
 
     # ------------------------------------------------------------------
     # Internal

@@ -291,3 +291,27 @@ class TestSecondOpinion:
     def test_unknown_mode_is_rejected(self, inspector):
         with pytest.raises(ValueError, match="unknown mode"):
             Inspector(inspector._engine, mode="reckless")  # type: ignore[arg-type]
+
+
+class TestBatchPriming:
+    def test_new_segments_are_primed_once_and_cached_ones_skipped(self, inspector, monkeypatch):
+        primed: list[list[str]] = []
+        monkeypatch.setattr(inspector._engine, "prime", lambda texts: primed.append(list(texts)))
+        page = "<p>Priming test paragraph alpha.</p><p>Priming test paragraph beta.</p>"
+
+        inspector.inspect(page)
+        assert primed == [["Priming test paragraph alpha.", "Priming test paragraph beta."]]
+
+        inspector.inspect(page)
+        assert len(primed) == 1
+
+    def test_priming_does_not_change_the_verdict(self, inspector, monkeypatch):
+        page = f"<p>The ferry leaves at nine each morning.</p><!-- {PAYLOAD} primed -->"
+        with_priming = inspector.inspect(page)
+
+        inspector._cache.clear()
+        monkeypatch.setattr(inspector._engine, "prime", lambda texts: None)
+        without_priming = inspector.inspect(page)
+
+        assert with_priming.action == without_priming.action == "sanitize"
+        assert with_priming.safe_content == without_priming.safe_content

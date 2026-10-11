@@ -63,7 +63,7 @@ ls src/cosmac/detectors/d*.py
 
 ### 2. Create the Detector File
 
-Copy the template from `docs/writing-detectors.md` or use this minimal example:
+Start from [examples/custom_detector/my_detector.py](examples/custom_detector/my_detector.py) or use this minimal example:
 
 ```python
 """Detector: My New Detector"""
@@ -151,7 +151,7 @@ Create `tests/fixtures/injections/my_new_detector.json` following the fixture sc
 
 ### 5. Update Documentation
 
-Add your detector to `docs/detectors.md`.
+Add your detector to the attack-type table in `README.md`.
 
 ### 6. Submit PR
 

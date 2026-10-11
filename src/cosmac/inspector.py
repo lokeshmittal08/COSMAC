@@ -313,6 +313,18 @@ class Inspector:
             self._cache.popitem(last=False)
         return detections
 
+    def _prime(self, segments: list[Segment]) -> None:
+        """Send every segment not seen before through the classifier in batches."""
+        texts = [t for s in segments for t in (s.text, s.alt_text) if t]
+        new = [
+            t
+            for t in dict.fromkeys(texts)
+            if hashlib.sha256(t.encode("utf-8", "replace")).hexdigest() not in self._cache
+        ]
+        prime = getattr(self._engine, "prime", None)
+        if prime is not None and len(new) > 1:
+            prime(new)
+
     def _scan_segment(self, segment: Segment) -> list[DetectionResult]:
         context: dict[str, Any] = {
             "gate": "inspect",
@@ -420,6 +432,7 @@ class Inspector:
         anomalies = list(doc.anomalies)
         hidden_dropped = 0
 
+        self._prime(doc.segments)
         for segment in doc.segments:
             detections = self._scan_segment(segment)
             verdict = self._judge(segment, detections)

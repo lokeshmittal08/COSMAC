@@ -76,7 +76,7 @@ sentiment = ["vaderSentiment>=3.3"]
 language = ["langdetect>=1.0"]
 # v0.8.0 — receipt-format adapters for ToolResultGuard (interop layer for
 # upstream capability enforcement projects; cosmac verifies, does
-# not mint tokens). See docs/capabilities/receipt-adapter.md.
+# not mint tokens).
 capabilities-pipelock = ["pipelock-verify>=0.1"]
 # PyJWT lower bound raised to 2.13 to close CVE-2024-53861 (issuer
 # partial-match, reachable via issuer=) plus CVE-2026-32597 (unknown
@@ -97,7 +97,6 @@ dev = [
     "mypy>=1.8",
     "pre-commit>=3.0",
     "httpx>=0.24",
-    "mkdocs-material>=9.0",
 ]
 
 [project.scripts]

@@ -133,4 +133,4 @@ The benign block rate on chat text is high. Most of it comes from the ML classif
 
 ## Latency
 
-Measured on an Apple Silicon laptop, CPU only: about 50 ms per segment the first time it is seen, dominated by the ML classifier. Verdicts are cached by content, so a repeated segment costs under 1 ms. A page with forty new segments therefore takes about two seconds; batching segments through the classifier is the planned fix.
+Measured on an Apple Silicon laptop, CPU only, on a page with forty new paragraphs: about 0.9 seconds, or 22 ms per segment. The segments of a document go through the ML classifier and the vault embedder in batches; before batching the same page took about 1.5 seconds. Verdicts are cached by content, so a repeated segment costs under 1 ms. What remains is mostly the pattern detectors, which still run once per segment.

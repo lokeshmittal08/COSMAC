@@ -31,6 +31,12 @@ class VaultSimilarityDetector(BaseDetector):
     def __init__(self) -> None:
         self.vault = None  # Will be injected by the engine
 
+    def prime(self, texts: list[str]) -> None:
+        """Embed many texts in one batch ahead of the per-text vault lookups."""
+        embedder = getattr(self.vault, "embedder", None)
+        if embedder is not None:
+            embedder.prime(texts)
+
     def detect(self, input_text: str, context: dict[str, object] | None = None) -> DetectionResult:
         if self.vault is None:
             return DetectionResult(
@@ -87,7 +93,8 @@ class VaultSimilarityDetector(BaseDetector):
                 )
             )
 
-        confidence = top_match.similarity_score
+        # Cosine similarity of an exact match can land a hair above 1.0.
+        confidence = max(0.0, min(1.0, top_match.similarity_score))
         return DetectionResult(
             detector_id=self.detector_id,
             detected=True,
