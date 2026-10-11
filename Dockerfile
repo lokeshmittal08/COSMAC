@@ -20,7 +20,7 @@ COPY src/ ./src/
 
 # Build a wheel and install into a prefix that we can copy later
 RUN pip install --no-cache-dir --prefix=/install "." && \
-    pip install --no-cache-dir --prefix=/install "fastapi>=0.100" "uvicorn[standard]>=0.20" "httpx>=0.24"
+    pip install --no-cache-dir --prefix=/install "fastapi>=0.100" "uvicorn[standard]>=0.20" "httpx>=0.24" "python-multipart>=0.0.9"
 
 # ---------------------------------------------------------------------------
 # Stage 2: Runtime — lean image with only what we need
